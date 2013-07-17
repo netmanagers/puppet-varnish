@@ -32,7 +32,6 @@ describe 'varnish' do
         :reload_vcl           => '1',
         :vcl_conf             => 'centosvcl_conf',
         :vcl_file             => 'somevcl_file',
-        :listen_address       => '10.42.10.42',
         :port                 => '4242',
         :admin_listen_address => '10.43.10.43',
         :admin_listen_port    => '4343',
@@ -50,7 +49,6 @@ NPROCS=unlimited
 RELOAD_VCL=1
 
 VARNISH_VCL_CONF=centosvcl_conf
-VARNISH_LISTEN_ADDRESS=10.42.10.42
 VARNISH_LISTEN_PORT=4242
 VARNISH_ADMIN_LISTEN_ADDRESS=10.43.10.43
 VARNISH_ADMIN_LISTEN_PORT=4343

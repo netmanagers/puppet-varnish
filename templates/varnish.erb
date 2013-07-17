@@ -61,9 +61,7 @@ VARNISH_STORAGE="file,${VARNISH_STORAGE_FILE},${VARNISH_STORAGE_SIZE}"
 <% end -%>
 
 DAEMON_OPTS=" \
-<% if scope.lookupvar('varnish::listen_address') != '' -%>
-    -a ${VARNISH_LISTEN_ADDRESS}<% if scope.lookupvar('varnish::port') != '' -%>:${VARNISH_LISTEN_PORT}<% end -%> \
-<% end -%>
+    -a ${VARNISH_LISTEN_ADDRESS}:${VARNISH_LISTEN_PORT} \
 <% if scope.lookupvar('varnish::vcl_conf') != '' -%>
     -f ${VARNISH_VCL_CONF} \
 <% end -%>

@@ -87,7 +87,7 @@ class varnish::params {
   $reload_vcl = '1'
   $vcl_conf = '/etc/varnish/default.vcl'
   $listen_address = ''
-  $port = '80'
+  $port = '6081'
   $admin_listen_address = '127.0.0.1'
   $admin_listen_port = '6082'
   $min_threads = '1'

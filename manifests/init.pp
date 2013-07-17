@@ -5,10 +5,114 @@
 #
 # == Parameters
 #
+# If you use a template to config varnish, the following defaults will be used.
+# They are pretty much the same CentOS and Debian use as their defaults. 
+# Note that if you don't specify a template file, no config file will be 
+# handled by this module and those files the distro package has will be left
+# untouched.
+#
+#
+# [*backendhost*]
+#   Backend fqdn or IP for the default VCL
+#   Default: localhost
+#
+# [*backendport*]
+#   Backend port for the VCL
+#   Default: 8008
+#
+# [*debian_start*]
+#   Debian adds this variable to the default config to see if we start or not
+#   varnish.
+#   It will not be used if @operatingsystem != /(?i:Debian|Ubuntu|Mint)/
+#   Default: true. 
+#
+# [*instance*]
+#   Instance name. 
+#   Default: "default"
+#
+# [*nfiles*]
+#   Maximum number of open files (for ulimit -n)
+#   Default: 131072
+#
+# [*memlock*]
+#   Locked shared memory (for ulimit -l)
+#   Default log size is 82MB + header
+#
+# [*nprocs*]
+#   Maximum number of threads (for ulimit -u
+#   Default: "unlimited"
+#
+# [*reload_vcl*]
+#   Set this to 1 to make init script reload try to switch vcl without restart.
+#   To make this work, you need to set the following variables
+#   explicit: [*vcl_conf*], [*admin_listen_address*],
+#   [*admin_listen_port*], [*secret_file*]
+#   Default: 1
+#
+# [*vcl_conf*]
+#   Main configuration file. You probably want to change it :)
+#   Default: /etc/varnish/default.vcl
+#
+# [*listen_address*]
+#   Default address and port to bind to
+#   Blank address means all IPv4 and IPv6 interfaces, otherwise specify
+#   a host name, an IPv4 dotted quad, or an IPv6 address in brackets.
+#   Default: ''
+#
+# [*port*]
+#   Default port to bind to. You probably want to change it to 80 :)
+#   Default: 6081
+#
+# [*admin_listen_address*]
+# [*admin_listen_port*]
+#   Telnet admin interface listen address and port
+#   Default: 127.0.0.1:6082
+#
+# [*min_threads*]
+#   The minimum number of worker threads to start
+#   Default: 1
+#
+# [*max_threads*]
+#   The Maximum number of worker threads to start
+#   Default: 1000
+#
+# [*thread_timeout*]
+#   Idle timeout for worker threads, in seconds
+#   Default: 120
+#
 # [*secret*]
 #   The password user by varnish admin.
 #   If blank, it's untouched and left to whatever the distro package sets.
 #   If 'auto' a random password is generated
+#
+# [*secret_file*]
+#   Shared secret file for admin interface
+#   Default: /etc/varnish/secret
+#
+# [*ttl*]
+#   Default TTL used when the backend does not specify on, in seconds
+#   Default: 120
+#
+# [*storage_size*]
+#   Cache file size: in bytes, optionally using k / M / G / T suffix,
+#   or in percentage of available disk space using the % suffix.
+#   Default: 1G
+#
+# [*storage_file*]
+#   Cache file location
+#   Default: /var/lib/varnish/$INSTANCE/varnish_storage.bin
+#
+# [*vcl_template*]
+#   Template file to setup the backend.
+#   Default: empty. 
+#
+# [*vcl_source*]
+#   Source file to setup the backend.
+#   Default: empty
+#
+# [*vcl_file*]
+#   VCL file name.
+#   Default: empty
 #
 # Standard class parameters
 # Define the general class behaviour and customizations

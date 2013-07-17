@@ -12,11 +12,153 @@ describe 'varnish' do
     it { should contain_service('varnish').with_ensure('running') }
     it { should contain_service('varnish').with_enable('true') }
     it { should contain_file('varnish.conf').with_ensure('present') }
+    it { should contain_file('varnish.secret').with_ensure('present') }
+    it { should contain_file('varnish.vcl').with_ensure('present') }
   end
 
   describe 'Test installation of a specific version' do
     let(:params) { {:version => '1.0.42' } }
     it { should contain_package('varnish').with_ensure('1.0.42') }
+  end
+
+  describe 'Test varnish configuration on CentOS' do
+    let(:facts) { { :operatingsystem => 'CentOS', } }
+    let(:params) do
+      {
+        :vcl_template         => 'varnish/default.vcl.erb',
+        :vcl_file             => '/etc/varnish/centos.vcl',
+        :template             => 'varnish/varnish.erb',
+        :debian_start         => true,
+        :reload_vcl           => '1',
+        :vcl_conf             => 'centosvcl_conf',
+        :vcl_file             => 'somevcl_file',
+        :listen_address       => '10.42.10.42',
+        :port                 => '4242',
+        :admin_listen_address => '10.43.10.43',
+        :admin_listen_port    => '4343',
+      }
+    end
+    let (:expected) do
+"# This file is managed by Puppet. DO NOT EDIT.
+
+INSTANCE=default
+
+NFILES=131072
+MEMLOCK=82000
+NPROCS=unlimited
+
+RELOAD_VCL=1
+
+VARNISH_VCL_CONF=centosvcl_conf
+VARNISH_LISTEN_ADDRESS=10.42.10.42
+VARNISH_LISTEN_PORT=4242
+VARNISH_ADMIN_LISTEN_ADDRESS=10.43.10.43
+VARNISH_ADMIN_LISTEN_PORT=4343
+VARNISH_MIN_THREADS=1
+VARNISH_MAX_THREADS=1000
+VARNISH_THREAD_TIMEOUT=120
+VARNISH_SECRET_FILE=/etc/varnish/secret
+VARNISH_TTL=120
+
+VARNISH_STORAGE_SIZE=1G
+VARNISH_STORAGE_FILE=/var/lib/varnish/$INSTANCE/varnish_storage.bin
+
+VARNISH_STORAGE=\"file,${VARNISH_STORAGE_FILE},${VARNISH_STORAGE_SIZE}\"
+
+DAEMON_OPTS=\" \\
+    -a ${VARNISH_LISTEN_ADDRESS}:${VARNISH_LISTEN_PORT} \\
+    -f ${VARNISH_VCL_CONF} \\
+    -T ${VARNISH_ADMIN_LISTEN_ADDRESS}:${VARNISH_ADMIN_LISTEN_PORT} \\
+    -t ${VARNISH_TTL} \\
+    -w ${VARNISH_MIN_THREADS},${VARNISH_MAX_THREADS},${VARNISH_THREAD_TIMEOUT} \\
+    -S ${VARNISH_SECRET_FILE} \\
+    -s ${VARNISH_STORAGE} \\
+\"
+"
+    end
+    it { should contain_file('varnish.conf').with_content(expected) }
+  end
+
+
+  describe 'Test varnish configuration on Debian' do
+    let(:facts) { { :operatingsystem => 'Debian', } }
+    let(:params) do
+      {
+        :vcl_template         => 'varnish/default.vcl.erb',
+        :vcl_file             => '/etc/varnish/default.vcl',
+        :template             => 'varnish/varnish.erb',
+        :backendhost          => 'somebackendhost',
+        :backendport          => 'somebackendport',
+        :debian_start         => true,
+        :instance             => 'someinstance',
+        :nfiles               => '1234',
+        :memlock              => '5678',
+        :nprocs               => '9',
+        :reload_vcl           => '1',
+        :vcl_conf             => 'somevcl_conf',
+        :vcl_file             => 'somevcl_file',
+        :listen_address       => '10.42.10.42',
+        :port                 => '4242',
+        :admin_listen_address => '10.43.10.43',
+        :admin_listen_port    => '4343',
+        :min_threads          => '5',
+        :max_threads          => '15',
+        :thread_timeout       => '1155',
+        :secret_file          => 'somesecret_file',
+        :ttl                  => '333',
+        :storage_size         => '4G',
+        :storage_file         => 'somestorage_file',
+      }
+    end
+    let (:config_expected) do
+"# This file is managed by Puppet. DO NOT EDIT.
+START=yes
+
+INSTANCE=someinstance
+
+NFILES=1234
+MEMLOCK=5678
+NPROCS=9
+
+RELOAD_VCL=1
+
+VARNISH_VCL_CONF=somevcl_conf
+VARNISH_LISTEN_ADDRESS=10.42.10.42
+VARNISH_LISTEN_PORT=4242
+VARNISH_ADMIN_LISTEN_ADDRESS=10.43.10.43
+VARNISH_ADMIN_LISTEN_PORT=4343
+VARNISH_MIN_THREADS=5
+VARNISH_MAX_THREADS=15
+VARNISH_THREAD_TIMEOUT=1155
+VARNISH_SECRET_FILE=somesecret_file
+VARNISH_TTL=333
+
+VARNISH_STORAGE_SIZE=4G
+VARNISH_STORAGE_FILE=somestorage_file
+
+VARNISH_STORAGE=\"file,${VARNISH_STORAGE_FILE},${VARNISH_STORAGE_SIZE}\"
+
+DAEMON_OPTS=\" \\
+    -a ${VARNISH_LISTEN_ADDRESS}:${VARNISH_LISTEN_PORT} \\
+    -f ${VARNISH_VCL_CONF} \\
+    -T ${VARNISH_ADMIN_LISTEN_ADDRESS}:${VARNISH_ADMIN_LISTEN_PORT} \\
+    -t ${VARNISH_TTL} \\
+    -w ${VARNISH_MIN_THREADS},${VARNISH_MAX_THREADS},${VARNISH_THREAD_TIMEOUT} \\
+    -S ${VARNISH_SECRET_FILE} \\
+    -s ${VARNISH_STORAGE} \\
+\"
+"
+    end
+    let (:vcl_expected) do
+"# This file is managed by Puppet. DO NOT EDIT.
+backend default {
+  .host = \"somebackendhost\";
+  .port = \"somebackendport\";
+}
+"
+    end
+    it { should contain_file('varnish.conf').with_content(config_expected) }
+    it { should contain_file('varnish.vcl').with_content(vcl_expected) }
   end
 
   describe 'Test standard installation with monitoring and firewalling' do
@@ -155,4 +297,3 @@ describe 'varnish' do
   end
 
 end
-

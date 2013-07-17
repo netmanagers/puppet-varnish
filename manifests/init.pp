@@ -1,9 +1,14 @@
-# = Class: varnish
+## = Class: varnish
 #
 # This is the main varnish class
 #
 #
 # == Parameters
+#
+# [*secret*]
+#   The password user by varnish admin.
+#   If blank, it's untouched and left to whatever the distro package sets.
+#   If 'auto' a random password is generated
 #
 # Standard class parameters
 # Define the general class behaviour and customizations
@@ -200,47 +205,71 @@
 # See README for usage patterns.
 #
 class varnish (
-  $my_class            = params_lookup( 'my_class' ),
-  $source              = params_lookup( 'source' ),
-  $source_dir          = params_lookup( 'source_dir' ),
-  $source_dir_purge    = params_lookup( 'source_dir_purge' ),
-  $template            = params_lookup( 'template' ),
-  $service_autorestart = params_lookup( 'service_autorestart' , 'global' ),
-  $options             = params_lookup( 'options' ),
-  $version             = params_lookup( 'version' ),
-  $absent              = params_lookup( 'absent' ),
-  $disable             = params_lookup( 'disable' ),
-  $disableboot         = params_lookup( 'disableboot' ),
-  $monitor             = params_lookup( 'monitor' , 'global' ),
-  $monitor_tool        = params_lookup( 'monitor_tool' , 'global' ),
-  $monitor_target      = params_lookup( 'monitor_target' , 'global' ),
-  $puppi               = params_lookup( 'puppi' , 'global' ),
-  $puppi_helper        = params_lookup( 'puppi_helper' , 'global' ),
-  $firewall            = params_lookup( 'firewall' , 'global' ),
-  $firewall_tool       = params_lookup( 'firewall_tool' , 'global' ),
-  $firewall_src        = params_lookup( 'firewall_src' , 'global' ),
-  $firewall_dst        = params_lookup( 'firewall_dst' , 'global' ),
-  $debug               = params_lookup( 'debug' , 'global' ),
-  $audit_only          = params_lookup( 'audit_only' , 'global' ),
-  $noops               = params_lookup( 'noops' ),
-  $package             = params_lookup( 'package' ),
-  $service             = params_lookup( 'service' ),
-  $service_status      = params_lookup( 'service_status' ),
-  $process             = params_lookup( 'process' ),
-  $process_args        = params_lookup( 'process_args' ),
-  $process_user        = params_lookup( 'process_user' ),
-  $config_dir          = params_lookup( 'config_dir' ),
-  $config_file         = params_lookup( 'config_file' ),
-  $config_file_mode    = params_lookup( 'config_file_mode' ),
-  $config_file_owner   = params_lookup( 'config_file_owner' ),
-  $config_file_group   = params_lookup( 'config_file_group' ),
-  $config_file_init    = params_lookup( 'config_file_init' ),
-  $pid_file            = params_lookup( 'pid_file' ),
-  $data_dir            = params_lookup( 'data_dir' ),
-  $log_dir             = params_lookup( 'log_dir' ),
-  $log_file            = params_lookup( 'log_file' ),
-  $port                = params_lookup( 'port' ),
-  $protocol            = params_lookup( 'protocol' )
+  $my_class             = params_lookup( 'my_class' ),
+  $backendhost          = params_lookup( 'backendhost' ),
+  $backendport          = params_lookup( 'backendport' ),
+  $debian_start         = params_lookup( 'debian_start' ),
+  $instance             = params_lookup( 'instance' ),
+  $nfiles               = params_lookup( 'nfiles' ),
+  $memlock              = params_lookup( 'memlock' ),
+  $nprocs               = params_lookup( 'nprocs' ),
+  $reload_vcl           = params_lookup( 'reload_vcl' ),
+  $vcl_conf             = params_lookup( 'vcl_conf' ),
+  $vcl_template         = params_lookup( 'vcl_template' ),
+  $vcl_source           = params_lookup( 'vcl_source' ),
+  $vcl_file             = params_lookup( 'vcl_file' ),
+  $listen_address       = params_lookup( 'listen_address' ),
+  $port                 = params_lookup( 'port' ),
+  $admin_listen_address = params_lookup( 'admin_listen_address' ),
+  $admin_listen_port    = params_lookup( 'admin_listen_port' ),
+  $min_threads          = params_lookup( 'min_threads' ),
+  $max_threads          = params_lookup( 'max_threads' ),
+  $thread_timeout       = params_lookup( 'thread_timeout' ),
+  $secret               = params_lookup( 'secret' ),
+  $secret_file          = params_lookup( 'secret_file' ),
+  $ttl                  = params_lookup( 'ttl' ),
+  $storage_size         = params_lookup( 'storage_size' ),
+  $storage_file         = params_lookup( 'storage_file' ),
+  $source               = params_lookup( 'source' ),
+  $source_dir           = params_lookup( 'source_dir' ),
+  $source_dir_purge     = params_lookup( 'source_dir_purge' ),
+  $template             = params_lookup( 'template' ),
+  $service_autorestart  = params_lookup( 'service_autorestart' , 'global' ),
+  $options              = params_lookup( 'options' ),
+  $version              = params_lookup( 'version' ),
+  $absent               = params_lookup( 'absent' ),
+  $disable              = params_lookup( 'disable' ),
+  $disableboot          = params_lookup( 'disableboot' ),
+  $monitor              = params_lookup( 'monitor' , 'global' ),
+  $monitor_tool         = params_lookup( 'monitor_tool' , 'global' ),
+  $monitor_target       = params_lookup( 'monitor_target' , 'global' ),
+  $puppi                = params_lookup( 'puppi' , 'global' ),
+  $puppi_helper         = params_lookup( 'puppi_helper' , 'global' ),
+  $firewall             = params_lookup( 'firewall' , 'global' ),
+  $firewall_tool        = params_lookup( 'firewall_tool' , 'global' ),
+  $firewall_src         = params_lookup( 'firewall_src' , 'global' ),
+  $firewall_dst         = params_lookup( 'firewall_dst' , 'global' ),
+  $debug                = params_lookup( 'debug' , 'global' ),
+  $audit_only           = params_lookup( 'audit_only' , 'global' ),
+  $noops                = params_lookup( 'noops' ),
+  $package              = params_lookup( 'package' ),
+  $service              = params_lookup( 'service' ),
+  $service_status       = params_lookup( 'service_status' ),
+  $process              = params_lookup( 'process' ),
+  $process_args         = params_lookup( 'process_args' ),
+  $process_user         = params_lookup( 'process_user' ),
+  $config_dir           = params_lookup( 'config_dir' ),
+  $config_file          = params_lookup( 'config_file' ),
+  $config_file_mode     = params_lookup( 'config_file_mode' ),
+  $config_file_owner    = params_lookup( 'config_file_owner' ),
+  $config_file_group    = params_lookup( 'config_file_group' ),
+  $config_file_init     = params_lookup( 'config_file_init' ),
+  $pid_file             = params_lookup( 'pid_file' ),
+  $data_dir             = params_lookup( 'data_dir' ),
+  $log_dir              = params_lookup( 'log_dir' ),
+  $log_file             = params_lookup( 'log_file' ),
+  $port                 = params_lookup( 'port' ),
+  $protocol             = params_lookup( 'protocol' )
   ) inherits varnish::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
@@ -256,6 +285,21 @@ class varnish (
   $bool_noops=any2bool($noops)
 
   ### Definition of some variables used in the module
+  ### Varnish secret setup
+  $real_varnish_secret = $varnish::secret ? {
+    ''      => '',
+    'auto'  => fqdn_rand(100000000000),
+    default => $varnish::secret,
+  }
+
+  $bool_debian_start = $::operatingsystem ? {
+     /(?i:Debian|Ubuntu|Mint)/ => any2bool($debian_start) ? {
+       true  => 'yes',
+       false => 'no',
+     },
+     default                   => false,
+  }
+
   $manage_package = $varnish::bool_absent ? {
     true  => 'absent',
     false => $varnish::version,
@@ -325,6 +369,16 @@ class varnish (
     default   => template($varnish::template),
   }
 
+  $manage_vcl_file_source = $varnish::vcl_source ? {
+    ''        => undef,
+    default   => $varnish::vcl_source,
+  }
+
+  $manage_vcl_file_content = $varnish::vcl_template ? {
+    ''        => undef,
+    default   => template($varnish::vcl_template),
+  }
+
   ### Managed resources
   package { $varnish::package:
     ensure  => $varnish::manage_package,
@@ -351,6 +405,35 @@ class varnish (
     notify  => $varnish::manage_service_autorestart,
     source  => $varnish::manage_file_source,
     content => $varnish::manage_file_content,
+    replace => $varnish::manage_file_replace,
+    audit   => $varnish::manage_audit,
+    noop    => $varnish::bool_noops,
+  }
+
+  file { 'varnish.secret':
+    ensure  => $varnish::manage_file,
+    path    => $varnish::secret_file,
+    mode    => $varnish::config_file_mode,
+    owner   => $varnish::config_file_owner,
+    group   => $varnish::config_file_group,
+    require => Package[$varnish::package],
+    notify  => $varnish::manage_service_autorestart,
+    content => "${varnish::real_varnish_secret}\n",
+    replace => $varnish::manage_file_replace,
+    audit   => $varnish::manage_audit,
+    noop    => $varnish::bool_noops,
+  }
+
+  file { 'varnish.vcl':
+    ensure  => $varnish::manage_file,
+    path    => $varnish::vcl_file,
+    mode    => $varnish::config_file_mode,
+    owner   => $varnish::config_file_owner,
+    group   => $varnish::config_file_group,
+    require => Package[$varnish::package],
+    notify  => $varnish::manage_service_autorestart,
+    source  => $varnish::manage_vcl_file_source,
+    content => $varnish::manage_vcl_file_content,
     replace => $varnish::manage_file_replace,
     audit   => $varnish::manage_audit,
     noop    => $varnish::bool_noops,

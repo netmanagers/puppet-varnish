@@ -45,7 +45,8 @@ class varnish::params {
   }
 
   $config_file = $::operatingsystem ? {
-    default => '/etc/varnish/varnish.conf',
+    /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/varnish',
+    default                   => '/etc/sysconfig/varnish',
   }
 
   $config_file_mode = $::operatingsystem ? {
@@ -58,11 +59,6 @@ class varnish::params {
 
   $config_file_group = $::operatingsystem ? {
     default => 'root',
-  }
-
-  $config_file_init = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/varnish',
-    default                   => '/etc/sysconfig/varnish',
   }
 
   $pid_file = $::operatingsystem ? {
@@ -81,7 +77,31 @@ class varnish::params {
     default => '/var/log/varnish/varnish.log',
   }
 
-  $port = '42'
+  $backendhost = '127.0.0.1'
+  $backendport = '8008'
+  $debian_start = true
+  $instance = 'default'
+  $nfiles = '131072'
+  $memlock = '82000'
+  $nprocs = 'unlimited'
+  $reload_vcl = '1'
+  $vcl_conf = '/etc/varnish/default.vcl'
+  $listen_address = ''
+  $port = '80'
+  $admin_listen_address = '127.0.0.1'
+  $admin_listen_port = '6082'
+  $min_threads = '1'
+  $max_threads = '1000'
+  $thread_timeout = '120'
+  $secret = ''
+  $secret_file = '/etc/varnish/secret'
+  $ttl = '120'
+  $storage_size = '1G'
+  $storage_file = '/var/lib/varnish/$INSTANCE/varnish_storage.bin'
+  $vcl_template = ''
+  $vcl_source = ''
+  $vcl_file = ''
+
   $protocol = 'tcp'
 
   # General Settings

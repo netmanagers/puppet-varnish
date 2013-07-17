@@ -1,0 +1,5 @@
+# This file is managed by Puppet. DO NOT EDIT.
+backend default {
+  .host = "<%= scope.lookupvar('varnish::backendhost') %>";
+  .port = "<%= scope.lookupvar('varnish::backendport') %>";
+}

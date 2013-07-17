@@ -2,11 +2,11 @@
 
 This is a Puppet module for varnish based on the second generation layout ("NextGen") of Example42 Puppet Modules.
 
-Made by Alessandro Franceschi / Lab42
+Made by Javier Bertoli / Netmanagers
 
-Official site: http://www.example42.com
+Official site: http://www.netmanagers.com.ar
 
-Official git repository: http://github.com/example42/puppet-varnish
+Official git repository: http://github.com/netmanagers/puppet-varnish
 
 Released under the terms of Apache 2 License.
 
@@ -113,4 +113,5 @@ For detailed info about the logic and usage patterns of Example42 modules check 
 
 ## CONTINUOUS TESTING
 
-Travis {<img src="https://travis-ci.org/example42/puppet-varnish.png?branch=master" alt="Build Status" />}[https://travis-ci.org/example42/puppet-varnish]
+Travis {<img src="https://travis-ci.org/netmanagers/puppet-varnish.png?branch=master" alt="Build Status" />}[https://travis-ci.org/netmanagers/puppet-varnish]
+

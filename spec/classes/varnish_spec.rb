@@ -102,6 +102,7 @@ DAEMON_OPTS=\" \\
         :min_threads          => '5',
         :max_threads          => '15',
         :thread_timeout       => '1155',
+        :secret               => 'somestring',
         :secret_file          => 'somesecret_file',
         :ttl                  => '333',
         :storage_size         => '4G',
@@ -157,6 +158,7 @@ backend default {
     end
     it { should contain_file('varnish.conf').with_content(config_expected) }
     it { should contain_file('varnish.vcl').with_content(vcl_expected) }
+    it { should contain_file('varnish.secret').with_content("somestring\n") }
   end
 
   describe 'Test standard installation with monitoring and firewalling' do

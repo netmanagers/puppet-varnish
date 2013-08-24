@@ -11,9 +11,12 @@ describe 'varnish' do
     it { should contain_package('varnish').with_ensure('present') }
     it { should contain_service('varnish').with_ensure('running') }
     it { should contain_service('varnish').with_enable('true') }
-    it { should contain_file('varnish.conf').with_ensure('present') }
-    it { should contain_file('varnish.secret').with_ensure('present') }
-    it { should contain_file('varnish.vcl').with_ensure('present') }
+    it { should contain_file('varnish.conf').with_ensure('present').without_content }
+    it { should contain_file('varnish.conf').with_ensure('present').without_source }
+    it { should contain_file('varnish.secret').with_ensure('present').with_content("\n") }
+    it { should contain_file('varnish.secret').with_ensure('present').without_source  }
+    it { should contain_file('varnish.vcl').with_ensure('present').without_content  }
+    it { should contain_file('varnish.vcl').with_ensure('present').without_source  }
   end
 
   describe 'Test installation of a specific version' do

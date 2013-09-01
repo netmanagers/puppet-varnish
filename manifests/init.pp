@@ -6,8 +6,8 @@
 # == Parameters
 #
 # If you use a template to config varnish, the following defaults will be used.
-# They are pretty much the same CentOS and Debian use as their defaults. 
-# Note that if you don't specify a template file, no config file will be 
+# They are pretty much the same CentOS and Debian use as their defaults.
+# Note that if you don't specify a template file, no config file will be
 # handled by this module and those files the distro package has will be left
 # untouched.
 #
@@ -24,10 +24,10 @@
 #   Debian adds this variable to the default config to see if we start or not
 #   varnish.
 #   It will not be used if @operatingsystem != /(?i:Debian|Ubuntu|Mint)/
-#   Default: true. 
+#   Default: true.
 #
 # [*instance*]
-#   Instance name. 
+#   Instance name.
 #   Default: "default"
 #
 # [*nfiles*]
@@ -104,7 +104,7 @@
 #
 # [*vcl_template*]
 #   Template file to setup the backend.
-#   Default: empty. 
+#   Default: empty.
 #
 # [*vcl_source*]
 #   Source file to setup the backend.
@@ -237,7 +237,7 @@
 # [*noops*]
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   Basically you can run a dryrun for this specific module if you set
-#   this to true. Default: false
+#   this to true. Default: undef
 #
 # Default class params - As defined in varnish::params.
 # Note that these variables are mostly defined and used in the module itself,
@@ -386,7 +386,6 @@ class varnish (
   $bool_firewall=any2bool($firewall)
   $bool_debug=any2bool($debug)
   $bool_audit_only=any2bool($audit_only)
-  $bool_noops=any2bool($noops)
 
   ### Definition of some variables used in the module
   ### Varnish secret setup
@@ -486,7 +485,7 @@ class varnish (
   ### Managed resources
   package { $varnish::package:
     ensure  => $varnish::manage_package,
-    noop    => $varnish::bool_noops,
+    noop    => $varnish::noops,
   }
 
   service { 'varnish':
@@ -496,7 +495,7 @@ class varnish (
     hasstatus  => $varnish::service_status,
     pattern    => $varnish::process,
     require    => Package[$varnish::package],
-    noop       => $varnish::bool_noops,
+    noop       => $varnish::noops,
   }
 
   file { 'varnish.conf':
@@ -511,7 +510,7 @@ class varnish (
     content => $varnish::manage_file_content,
     replace => $varnish::manage_file_replace,
     audit   => $varnish::manage_audit,
-    noop    => $varnish::bool_noops,
+    noop    => $varnish::noops,
   }
 
   file { 'varnish.secret':
@@ -525,7 +524,7 @@ class varnish (
     content => "${varnish::real_varnish_secret}\n",
     replace => $varnish::manage_file_replace,
     audit   => $varnish::manage_audit,
-    noop    => $varnish::bool_noops,
+    noop    => $varnish::noops,
   }
 
   file { 'varnish.vcl':
@@ -540,7 +539,7 @@ class varnish (
     content => $varnish::manage_vcl_file_content,
     replace => $varnish::manage_file_replace,
     audit   => $varnish::manage_audit,
-    noop    => $varnish::bool_noops,
+    noop    => $varnish::noops,
   }
 
   # The whole varnish configuration directory can be recursively overriden
@@ -556,7 +555,7 @@ class varnish (
       force   => $varnish::bool_source_dir_purge,
       replace => $varnish::manage_file_replace,
       audit   => $varnish::manage_audit,
-      noop    => $varnish::bool_noops,
+      noop    => $varnish::noops,
     }
   }
 
@@ -574,7 +573,7 @@ class varnish (
       ensure    => $varnish::manage_file,
       variables => $classvars,
       helper    => $varnish::puppi_helper,
-      noop      => $varnish::bool_noops,
+      noop      => $varnish::noops,
     }
   }
 
@@ -588,7 +587,7 @@ class varnish (
         target   => $varnish::monitor_target,
         tool     => $varnish::monitor_tool,
         enable   => $varnish::manage_monitor,
-        noop     => $varnish::bool_noops,
+        noop     => $varnish::noops,
       }
     }
     if $varnish::service != '' {
@@ -600,7 +599,7 @@ class varnish (
         argument => $varnish::process_args,
         tool     => $varnish::monitor_tool,
         enable   => $varnish::manage_monitor,
-        noop     => $varnish::bool_noops,
+        noop     => $varnish::noops,
       }
     }
   }
@@ -617,7 +616,7 @@ class varnish (
       direction   => 'input',
       tool        => $varnish::firewall_tool,
       enable      => $varnish::manage_firewall,
-      noop        => $varnish::bool_noops,
+      noop        => $varnish::noops,
     }
   }
 
@@ -631,7 +630,7 @@ class varnish (
       owner   => 'root',
       group   => 'root',
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
-      noop    => $varnish::bool_noops,
+      noop    => $varnish::noops,
     }
   }
 

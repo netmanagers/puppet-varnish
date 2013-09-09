@@ -11,6 +11,7 @@ describe 'varnish' do
     it { should contain_package('varnish').with_ensure('present') }
     it { should contain_service('varnish').with_ensure('running') }
     it { should contain_service('varnish').with_enable('true') }
+    it { should contain_service('varnish').without('restart') }
     it { should contain_file('varnish.conf').with_ensure('present').without_content }
     it { should contain_file('varnish.conf').with_ensure('present').without_source }
     it { should contain_file('varnish.secret').with_ensure('present').with_content("\n") }
@@ -91,11 +92,12 @@ DAEMON_OPTS=\" \\
         :backendhost          => 'somebackendhost',
         :backendport          => 'somebackendport',
         :debian_start         => true,
+        :service_restart      => 'some restart command',
         :instance             => 'someinstance',
         :nfiles               => '1234',
         :memlock              => '5678',
         :nprocs               => '9',
-        :reload_vcl           => '1',
+        :reload_vcl          => '1',
         :vcl_conf             => 'somevcl_conf',
         :vcl_file             => 'somevcl_file',
         :listen_address       => '10.42.10.42',
@@ -162,6 +164,7 @@ backend default {
     it { should contain_file('varnish.conf').with_content(config_expected) }
     it { should contain_file('varnish.vcl').with_content(vcl_expected) }
     it { should contain_file('varnish.secret').with_content("somestring\n") }
+    it { should contain_service('varnish').with_restart('some restart command') }
   end
 
   describe 'Test standard installation with monitoring and firewalling' do

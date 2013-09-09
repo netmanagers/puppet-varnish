@@ -254,6 +254,10 @@
 # [*service_status*]
 #   If the varnish service init script supports status argument
 #
+# [*service_restart*]
+#   Command to execute to restart the service.
+#   Default: empty. Leave puppet manage the restart cycle
+#
 # [*process*]
 #   The name of varnish process
 #
@@ -339,6 +343,7 @@ class varnish (
   $source_dir_purge     = params_lookup( 'source_dir_purge' ),
   $template             = params_lookup( 'template' ),
   $service_autorestart  = params_lookup( 'service_autorestart' , 'global' ),
+  $service_restart      = params_lookup( 'service_restart' ),
   $options              = params_lookup( 'options' ),
   $version              = params_lookup( 'version' ),
   $absent               = params_lookup( 'absent' ),
@@ -419,6 +424,11 @@ class varnish (
     },
   }
 
+  $manage_service_restart = $service_restart ? {
+    ''      => undef,
+    default => $service_restart,
+  }
+
   $manage_service_ensure = $varnish::bool_disable ? {
     true    => 'stopped',
     default =>  $varnish::bool_absent ? {
@@ -494,6 +504,7 @@ class varnish (
     enable     => $varnish::manage_service_enable,
     hasstatus  => $varnish::service_status,
     pattern    => $varnish::process,
+    restart    => $varnish::manage_service_restart,
     require    => Package[$varnish::package],
     noop       => $varnish::noops,
   }

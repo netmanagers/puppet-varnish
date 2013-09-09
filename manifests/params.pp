@@ -28,6 +28,10 @@ class varnish::params {
     default => true,
   }
 
+  $service_restart = $::operatingsystem ? {
+    default => '',
+  }
+
   $process = $::operatingsystem ? {
     default => 'varnish',
   }

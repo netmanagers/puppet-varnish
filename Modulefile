@@ -1,5 +1,5 @@
 name 'netmanagers-varnish'
-version '1.0.3'
+version '1.0.4'
 
 author  'Javier Bertoli'
 license 'Apache2'

@@ -57,7 +57,11 @@ VARNISH_TTL=<%= scope.lookupvar('varnish::ttl') %>
 VARNISH_STORAGE_SIZE=<%= scope.lookupvar('varnish::storage_size') %>
 VARNISH_STORAGE_FILE=<%= scope.lookupvar('varnish::storage_file') %>
 
+<%   if scope.lookupvar('varnish::storage_file') == 'malloc' -%>
+VARNISH_STORAGE="${VARNISH_STORAGE_FILE},${VARNISH_STORAGE_SIZE}"
+<%   else -%>
 VARNISH_STORAGE="file,${VARNISH_STORAGE_FILE},${VARNISH_STORAGE_SIZE}"
+<%   end -%>
 <% end -%>
 
 DAEMON_OPTS=" \

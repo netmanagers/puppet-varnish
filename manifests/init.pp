@@ -95,12 +95,13 @@
 #
 # [*storage_size*]
 #   Cache file size: in bytes, optionally using k / M / G / T suffix,
-#   or in percentage of available disk space using the % suffix.
+#   or in percentage of available storage space using the % suffix.
 #   Default: 1G
 #
 # [*storage_file*]
 #   Cache file location
 #   Default: /var/lib/varnish/$INSTANCE/varnish_storage.bin
+#   Specify 'malloc' to keep the cache wholly in memory.
 #
 # [*vcl_template*]
 #   Template file to setup the backend.

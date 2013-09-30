@@ -402,11 +402,11 @@ class varnish (
   }
 
   $bool_debian_start = $::operatingsystem ? {
-     /(?i:Debian|Ubuntu|Mint)/ => any2bool($debian_start) ? {
-       true  => 'yes',
-       false => 'no',
-     },
-     default                   => false,
+    /(?i:Debian|Ubuntu|Mint)/ => any2bool($debian_start) ? {
+      true  => 'yes',
+      false => 'no',
+    },
+    default                   => false,
   }
 
   $manage_package = $varnish::bool_absent ? {

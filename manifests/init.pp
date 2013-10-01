@@ -111,10 +111,6 @@
 #   Source file to setup the backend.
 #   Default: empty
 #
-# [*vcl_file*]
-#   VCL file name.
-#   Default: empty
-#
 # Standard class parameters
 # Define the general class behaviour and customizations
 #
@@ -326,7 +322,6 @@ class varnish (
   $vcl_conf             = params_lookup( 'vcl_conf' ),
   $vcl_template         = params_lookup( 'vcl_template' ),
   $vcl_source           = params_lookup( 'vcl_source' ),
-  $vcl_file             = params_lookup( 'vcl_file' ),
   $listen_address       = params_lookup( 'listen_address' ),
   $port                 = params_lookup( 'port' ),
   $admin_listen_address = params_lookup( 'admin_listen_address' ),
@@ -541,7 +536,7 @@ class varnish (
 
   file { 'varnish.vcl':
     ensure  => $varnish::manage_file,
-    path    => $varnish::vcl_file,
+    path    => $varnish::vcl_conf,
     mode    => $varnish::config_file_mode,
     owner   => $varnish::config_file_owner,
     group   => $varnish::config_file_group,

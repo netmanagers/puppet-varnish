@@ -30,12 +30,11 @@ describe 'varnish' do
     let(:params) do
       {
         :vcl_template         => 'varnish/default.vcl.erb',
-        :vcl_file             => '/etc/varnish/centos.vcl',
+        :vcl_conf             => '/etc/varnish/centos.vcl',
         :template             => 'varnish/varnish.erb',
         :debian_start         => true,
         :reload_vcl           => '1',
         :vcl_conf             => 'centosvcl_conf',
-        :vcl_file             => 'somevcl_file',
         :port                 => '4242',
         :admin_listen_address => '10.43.10.43',
         :admin_listen_port    => '4343',
@@ -87,7 +86,7 @@ DAEMON_OPTS=\" \\
     let(:params) do
       {
         :vcl_template         => 'varnish/default.vcl.erb',
-        :vcl_file             => '/etc/varnish/default.vcl',
+        :vcl_conf             => '/etc/varnish/default.vcl',
         :template             => 'varnish/varnish.erb',
         :backendhost          => 'somebackendhost',
         :backendport          => 'somebackendport',
@@ -99,7 +98,6 @@ DAEMON_OPTS=\" \\
         :nprocs               => '9',
         :reload_vcl          => '1',
         :vcl_conf             => 'somevcl_conf',
-        :vcl_file             => 'somevcl_file',
         :listen_address       => '10.42.10.42',
         :port                 => '4242',
         :admin_listen_address => '10.43.10.43',

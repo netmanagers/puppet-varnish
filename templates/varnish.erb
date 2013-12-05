@@ -87,4 +87,7 @@ DAEMON_OPTS=" \
       scope.lookupvar('varnish::storage_file') != '' -%>
     -s ${VARNISH_STORAGE} \
 <% end -%>
+<% if scope.lookupvar('varnish::instance') != '' -%>
+    -n ${INSTANCE} \
+<% end -%>
 "

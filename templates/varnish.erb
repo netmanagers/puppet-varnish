@@ -83,11 +83,12 @@ DAEMON_OPTS=" \
 <% if scope.lookupvar('varnish::secret_file') != '' -%>
     -S ${VARNISH_SECRET_FILE} \
 <% end -%>
-<% if scope.lookupvar('varnish::storage_size') != ''and
+<% if scope.lookupvar('varnish::storage_size') != ' and
       scope.lookupvar('varnish::storage_file') != '' -%>
     -s ${VARNISH_STORAGE} \
 <% end -%>
-<% if scope.lookupvar('varnish::instance') != '' -%>
+<% if scope.lookupvar('varnish::instance') != '' and 
+      scope.lookupvar('varnish::instance') != 'default' -%>
     -n ${INSTANCE} \
 <% end -%>
 "

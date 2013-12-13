@@ -77,7 +77,9 @@ DAEMON_OPTS=\" \\
 \"
 "
     end
-    it { should contain_file('varnish.conf').with_content(expected) }
+    it 'should generate a default instance config file' do
+      should contain_file('varnish.conf').with_content(expected)
+    end
   end
 
 
@@ -148,6 +150,7 @@ DAEMON_OPTS=\" \\
     -w ${VARNISH_MIN_THREADS},${VARNISH_MAX_THREADS},${VARNISH_THREAD_TIMEOUT} \\
     -S ${VARNISH_SECRET_FILE} \\
     -s ${VARNISH_STORAGE} \\
+    -n ${INSTANCE} \\
 \"
 "
     end
@@ -159,7 +162,9 @@ backend default {
 }
 "
     end
-    it { should contain_file('varnish.conf').with_content(config_expected) }
+    it 'should generate a valid instance config file' do
+      should contain_file('varnish.conf').with_content(config_expected)
+    end
     it { should contain_file('varnish.vcl').with_content(vcl_expected) }
     it { should contain_file('varnish.secret').with_content("somestring\n") }
     it { should contain_service('varnish').with_restart('some restart command') }
@@ -220,12 +225,10 @@ backend default {
   describe 'Test customizations - template' do
     let(:params) { {:template => "varnish/spec.erb" , :options => { 'opt_a' => 'value_a' } } }
     it 'should generate a valid template' do
-      content = catalogue.resource('file', 'varnish.conf').send(:parameters)[:content]
-      content.should match "fqdn: rspec.example42.com"
+      should contain_file('varnish.conf').with_content(/fqdn: rspec.example42.com/)
     end
     it 'should generate a template that uses custom options' do
-      content = catalogue.resource('file', 'varnish.conf').send(:parameters)[:content]
-      content.should match "value_a"
+      should contain_file('varnish.conf').with_content(/value_a/)
     end
   end
 
@@ -249,8 +252,7 @@ backend default {
   describe 'Test service autorestart' do
     let(:params) { {:service_autorestart => "no" } }
     it 'should not automatically restart the service, when service_autorestart => false' do
-      content = catalogue.resource('file', 'varnish.conf').send(:parameters)[:notify]
-      content.should be_nil
+      should contain_file('varnish.conf').without('notify')
     end
   end
 

@@ -10,3 +10,5 @@ description 'This module installs and manages varnish. Check README for details.
 dependency 'example42/puppi', '>=2.0.0'
 dependency 'example42/firewall', '>=2.0.0'
 dependency 'example42/monitor', '>=2.0.0'
+dependency 'puppetlabs/stdlib', '>= 2.2.0'
+

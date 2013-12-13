@@ -150,6 +150,7 @@ DAEMON_OPTS=\" \\
     -w ${VARNISH_MIN_THREADS},${VARNISH_MAX_THREADS},${VARNISH_THREAD_TIMEOUT} \\
     -S ${VARNISH_SECRET_FILE} \\
     -s ${VARNISH_STORAGE} \\
+    -n ${INSTANCE} \\
 \"
 "
     end
